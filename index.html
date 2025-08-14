@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech Converter | Puter.ai</title>
+    <script src="https://js.puter.com/v2/"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2980, #26d0ce);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        header {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            transform: rotate(30deg);
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255,255,255,0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .main-content {
+            padding: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #4776E6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            font-size: 1.6rem;
+        }
+        
+        .input-section textarea {
+            width: 100%;
+            height: 180px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            resize: vertical;
+            transition: all 0.3s;
+            background: #f9f9ff;
+        }
+        
+        .input-section textarea:focus {
+            outline: none;
+            border-color: #4776E6;
+            box-shadow: 0 0 0 3px rgba(71, 118, 230, 0.2);
+        }
+        
+        .settings {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 25px 0;
+        }
+        
+        .setting-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .setting-group label {
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        select, input {
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #f9f9ff;
+            transition: all 0.3s;
+        }
+        
+        select:focus, input:focus {
+            border-color: #4776E6;
+            box-shadow: 0 0 0 3px rgba(71, 118, 230, 0.2);
+            outline: none;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin: 40px 0 20px;
+        }
+        
+        .btn {
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(to right, #4776E6, #8E54E9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(142, 84, 233, 0.4);
+        }
+        
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(142, 84, 233, 0.5);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(to right, #f5f7fa, #e4e7eb);
+            color: #444;
+        }
+        
+        .btn-secondary:hover {
+            background: linear-gradient(to right, #e4e7eb, #d1d5db);
+        }
+        
+        .audio-player {
+            background: linear-gradient(to right, #f8f9fa, #f1f3f5);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #eee;
+        }
+        
+        .audio-player.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        audio {
+            width: 100%;
+            outline: none;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 20px;
+            font-size: 1.2rem;
+            color: #4776E6;
+            font-weight: 500;
+            display: none;
+            background: #edf2ff;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .status.active {
+            display: block;
+        }
+        
+        .examples {
+            margin-top: 30px;
+        }
+        
+        .examples h3 {
+            margin-bottom: 15px;
+            color: #444;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .example-texts {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .example-btn {
+            padding: 12px 24px;
+            background: linear-gradient(to right, #edf2ff, #dbe4ff);
+            border: none;
+            border-radius: 12px;
+            color: #4776E6;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .example-btn:hover {
+            background: linear-gradient(to right, #dbe4ff, #c7d3fe);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .char-count {
+            text-align: right;
+            margin-top: 10px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: rgba(248, 249, 250, 0.8);
+            color: #666;
+            font-size: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(71, 118, 230, 0.3);
+            border-radius: 50%;
+            border-top-color: #4776E6;
+            animation: spin 1s ease-in-out infinite;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .main-content {
+                padding: 25px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+        
+        .wave {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 50px;
+            margin: 20px 0;
+        }
+        
+        .wave span {
+            display: inline-block;
+            width: 6px;
+            height: 20px;
+            background: linear-gradient(to top, #4776E6, #8E54E9);
+            margin: 0 3px;
+            border-radius: 3px;
+            animation: wave 1.2s infinite ease-in-out;
+        }
+        
+        .wave span:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+        
+        .wave span:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+        
+        .wave span:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+        
+        .wave span:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes wave {
+            0%, 60%, 100% {
+                transform: scaleY(0.4);
+            }
+            30% {
+                transform: scaleY(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-microphone-alt"></i>
+            </div>
+            <h1>Text to Speech Converter</h1>
+            <p>Ubah teks menjadi suara menggunakan teknologi AI dari Puter</p>
+        </header>
+        
+        <div class="main-content">
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-keyboard"></i> Masukkan Teks</h2>
+                <div class="input-section">
+                    <textarea id="text-input" placeholder="Ketik atau tempel teks di sini...">Halo! Selamat datang di konverter teks ke suara. Silakan ketik teks Anda dan klik tombol Convert untuk mendengarkan hasilnya menggunakan teknologi AI dari Puter.</textarea>
+                    <div class="char-count">Jumlah karakter: <span id="char-count">0</span></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2 class="card-title"><i class="fas fa-sliders-h"></i> Pengaturan Suara</h2>
+                <div class="settings">
+                    <div class="setting-group">
+                        <label for="voice-select"><i class="fas fa-user"></i> Jenis Suara</label>
+                        <select id="voice-select">
+                            <option value="Joanna">Joanna (Wanita - EN)</option>
+                            <option value="Matthew">Matthew (Pria - EN)</option>
+                            <option value="Amy">Amy (Wanita - EN)</option>
+                            <option value="Brian">Brian (Pria - EN)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="engine-select"><i class="fas fa-cogs"></i> Engine</label>
+                        <select id="engine-select">
+                            <option value="standard">Standard</option>
+                            <option value="neural" selected>Neural (Terbaik)</option>
+                            <option value="generative">Generative (AI)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="setting-group">
+                        <label for="language-select"><i class="fas fa-globe"></i> Bahasa</label>
+                        <select id="language-select">
+                            <option value="en-US" selected>English (US)</option>
+                            <option value="id-ID">Bahasa Indonesia</option>
+                            <option value="fr-FR">French</option>
+                            <option value="de-DE">German</option>
+                            <option value="es-ES">Spanish</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="convert-btn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Konversi Teks
+                </button>
+                <button id="stop-btn" class="btn btn-secondary">
+                    <i class="fas fa-stop"></i> Stop
+                </button>
+                <button id="clear-btn" class="btn btn-secondary">
+                    <i class="fas fa-trash-alt"></i> Hapus
+                </button>
+            </div>
+            
+            <div id="status" class="status">
+                <span class="loading"></span> Memproses suara... Harap tunggu
+            </div>
+            
+            <div class="wave" id="wave-animation" style="display:none;">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            
+            <div id="audio-container" class="audio-player">
+                <h3 class="card-title"><i class="fas fa-music"></i> Hasil Konversi</h3>
+                <audio id="audio-player" controls></audio>
+            </div>
+            
+            <div class="examples">
+                <h3><i class="fas fa-lightbulb"></i> Contoh Teks</h3>
+                <div class="example-texts">
+                    <button class="example-btn" data-text="Selamat pagi! Apa kabar hari ini?">Sapaan</button>
+                    <button class="example-btn" data-text="Teknologi text-to-speech sangat membantu dalam berbagai aplikasi seperti navigasi, asisten virtual, dan aksesibilitas.">Teknologi</button>
+                    <button class="example-btn" data-text="Puter AI menyediakan layanan API yang sangat berguna untuk pengembang aplikasi berbasis web.">Puter API</button>
+                    <button class="example-btn" data-text="Hello world! This is a test of the text-to-speech engines. Notice the difference in quality.">English Test</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Dibuat dengan <strong>Puter.ai txt2speech API</strong> | © 2023 Text to Speech Converter</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elemen UI
+            const textInput = document.getElementById('text-input');
+            const convertBtn = document.getElementById('convert-btn');
+            const stopBtn = document.getElementById('stop-btn');
+            const clearBtn = document.getElementById('clear-btn');
+            const audioPlayer = document.getElementById('audio-player');
+            const audioContainer = document.getElementById('audio-container');
+            const statusText = document.getElementById('status');
+            const voiceSelect = document.getElementById('voice-select');
+            const engineSelect = document.getElementById('engine-select');
+            const languageSelect = document.getElementById('language-select');
+            const exampleBtns = document.querySelectorAll('.example-btn');
+            const charCount = document.getElementById('char-count');
+            const waveAnimation = document.getElementById('wave-animation');
+            
+            // Inisialisasi jumlah karakter
+            updateCharCount();
+            
+            // Variabel untuk menyimpan audio saat ini
+            let currentAudio = null;
+            
+            // Fungsi untuk mengupdate jumlah karakter
+            function updateCharCount() {
+                const length = textInput.value.length;
+                charCount.textContent = length;
+                
+                // Peringatan jika teks terlalu panjang
+                if (length > 3000) {
+                    charCount.style.color = '#ff4444';
+                } else {
+                    charCount.style.color = '#666';
+                }
+            }
+            
+            // Event listener untuk input teks
+            textInput.addEventListener('input', updateCharCount);
+            
+            // Fungsi untuk mengkonversi teks ke suara
+            async function convertTextToSpeech() {
+                const text = textInput.value.trim();
+                
+                if (!text) {
+                    alert('Silakan masukkan teks terlebih dahulu');
+                    return;
+                }
+                
+                if (text.length > 3000) {
+                    alert('Teks tidak boleh lebih dari 3000 karakter');
+                    return;
+                }
+                
+                // Tampilkan status loading
+                statusText.classList.add('active');
+                waveAnimation.style.display = 'flex';
+                convertBtn.disabled = true;
+                convertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                
+                try {
+                    // Dapatkan pengaturan
+                    const voice = voiceSelect.value;
+                    const engine = engineSelect.value;
+                    const language = languageSelect.value;
+                    
+                    // Gunakan sintaks yang benar berdasarkan panduan
+                    let audioResult;
+                    
+                    if (engine && voice) {
+                        // Gunakan options object
+                        audioResult = await puter.ai.txt2speech(text, {
+                            voice: voice,
+                            engine: engine,
+                            language: language
+                        });
+                    } else {
+                        // Gunakan hanya bahasa
+                        audioResult = await puter.ai.txt2speech(text, language);
+                    }
+                    
+                    // Sembunyikan status loading
+                    statusText.classList.remove('active');
+                    waveAnimation.style.display = 'none';
+                    convertBtn.disabled = false;
+                    convertBtn.innerHTML = '<i class="fas fa-play"></i> Konversi Teks';
+                    
+                    // Simpan audio untuk kontrol
+                    currentAudio = audioResult;
+                    
+                    // Tampilkan kontrol audio jika diperlukan
+                    if (audioResult.src) {
+                        audioPlayer.src = audioResult.src;
+                        audioContainer.classList.add('active');
+                    }
+                    
+                    // Mainkan audio
+                    audioResult.play();
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    statusText.classList.remove('active');
+                    waveAnimation.style.display = 'none';
+                    convertBtn.disabled = false;
+                    convertBtn.innerHTML = '<i class="fas fa-play"></i> Konversi Teks';
+                    alert('Terjadi kesalahan: ' + (error.message || error));
+                }
+            }
+            
+            // Event listeners
+            convertBtn.addEventListener('click', convertTextToSpeech);
+            
+            stopBtn.addEventListener('click', function() {
+                // Stop audio player HTML5
+                if (audioPlayer.src) {
+                    audioPlayer.pause();
+                    audioPlayer.currentTime = 0;
+                }
+                
+                // Stop current audio jika ada
+                if (currentAudio && typeof currentAudio.pause === 'function') {
+                    currentAudio.pause();
+                }
+                
+                // Reset UI
+                convertBtn.innerHTML = '<i class="fas fa-play"></i> Konversi Teks';
+            });
+            
+            clearBtn.addEventListener('click', function() {
+                textInput.value = '';
+                
+                // Stop dan clear audio
+                if (audioPlayer.src) {
+                    audioPlayer.pause();
+                    audioPlayer.src = '';
+                }
+                
+                if (currentAudio && typeof currentAudio.pause === 'function') {
+                    currentAudio.pause();
+                }
+                
+                audioContainer.classList.remove('active');
+                currentAudio = null;
+                updateCharCount();
+                
+                // Reset UI
+                convertBtn.innerHTML = '<i class="fas fa-play"></i> Konversi Teks';
+            });
+            
+            // Contoh teks
+            exampleBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    textInput.value = this.getAttribute('data-text');
+                    updateCharCount();
+                });
+            });
+            
+            // Event listeners untuk audio player
+            if (audioPlayer) {
+                audioPlayer.addEventListener('play', function() {
+                    convertBtn.innerHTML = '<i class="fas fa-volume-up"></i> Memutar...';
+                });
+                
+                audioPlayer.addEventListener('ended', function() {
+                    convertBtn.innerHTML = '<i class="fas fa-play"></i> Konversi Teks';
+                });
+                
+                audioPlayer.addEventListener('pause', function() {
+                    convertBtn.innerHTML = '<i class="fas fa-play"></i> Konversi Teks';
+                });
+            }
+        });
+    </script>
+</body>
+</html>
